@@ -12,7 +12,7 @@ my %CLOSURES;
 
 BEGIN
 {
-    $VERSION = '0.01';
+    $VERSION = '0.02';
 
     my @closures = qw(
         hiragana
@@ -36,10 +36,14 @@ BEGIN
         die "Couldn't create $func: $@" if $@;
     }
 
+    
     %EXPORT_TAGS = (
-        closures => \@closures,
+        closures => [@closures, 'jp_length'],
     );
-    $EXPORT_TAGS{all} = [ map { @$_ } values %EXPORT_TAGS ];
+    $EXPORT_TAGS{all} = [ 
+        (map { "match_" . $_ } grep { $_ ne 'jp_length' } map { @$_ } values %EXPORT_TAGS),
+        map { @$_ } values %EXPORT_TAGS
+    ];
     @EXPORT_OK = @{$EXPORT_TAGS{all}};
 }
 
@@ -88,6 +92,26 @@ sub match_jp_vodafone_email
     Mail::Address::MobileJp::is_vodafone($_[0]);
 }
 
+sub check_jp_length
+{
+    require Encode::Detect;
+    my $l = length(decode('Detect', $_[0]));
+    return 
+        @_ >= 2 ? $_[1] <= $l && $_[2] >= $l :
+        $_[1] <= $l;
+}
+
+sub jp_length
+{
+    my($min, $max) = @_;
+    return sub {
+        my $dfv = shift;
+        $dfv->name_this('jp_length');
+        no strict 'refs';
+        return &{"check_jp_length"}(@_, $min, $max);
+    };
+}
+
 1;
 
 __END__
@@ -108,6 +132,7 @@ Data::FormValidator::Constraints:Japanese - Japan-Specific Constraints For Data:
      jp_ezweb_email    => jp_ezweb_email(),
      jp_vodafone_email => jp_vodafone_email(),
      jp_zip            => jp_zip(),
+     jp_length         => jp_length(1, 10),
   }, 
 
   # or, use the regular functions
@@ -141,9 +166,11 @@ Returns a closure that checks if the input is all in katakana
 
 =head1 jp_vodafone_email
 
+=head1 jp_length
+
 =head1 TODO
 
-Yes, I only made two functions for this release. I'll release more upon
+I'm sure there are lots of other constraints. I'll release more upon
 request, or when I encounter something new to validate. Patches welcome.
 
 =head1 AUTHOR

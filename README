@@ -13,6 +13,7 @@ SYNOPSIS
          jp_ezweb_email    => jp_ezweb_email(),
          jp_vodafone_email => jp_vodafone_email(),
          jp_zip            => jp_zip(),
+         jp_length         => jp_length(1, 10),
       }, 
 
       # or, use the regular functions
@@ -38,8 +39,9 @@ jp_mobile_email
 jp_imode_email
 jp_ezweb_email
 jp_vodafone_email
+jp_length
 TODO
-    Yes, I only made two functions for this release. I'll release more upon
+    I'm sure there are lots of other constraints. I'll release more upon
     request, or when I encounter something new to validate. Patches welcome.
 
 AUTHOR

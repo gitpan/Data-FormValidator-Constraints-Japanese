@@ -23,5 +23,11 @@ use Data::FormValidator::Constraints::Japanese qw(:all);
         constraint_methods => {
             zip => jp_zip(),
         }
+    },
+    length => {
+        required => [ qw(text) ],
+        constraint_methods => {
+            text => jp_length(4, 7)
+        }
     }
 };

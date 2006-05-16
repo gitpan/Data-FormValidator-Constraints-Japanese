@@ -1,6 +1,6 @@
 ---
 name: Data-FormValidator-Constraints-Japanese
-version: 0.01
+version: 0.02
 author:
   - |-
     Copyright (c) 2006 Daisuke Maki <dmaki@cpan.org>
@@ -17,7 +17,7 @@ requires:
 provides:
   Data::FormValidator::Constraints::Japanese:
     file: lib/Data/FormValidator/Constraints/Japanese.pm
-    version: 0.01
+    version: 0.02
 generated_by: Module::Build version 0.28
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
