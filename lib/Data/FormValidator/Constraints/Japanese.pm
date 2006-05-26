@@ -1,4 +1,4 @@
-# $Id: Japanese.pm 1 2006-05-15 10:18:08Z daisuke $
+# $Id: Japanese.pm 2 2006-05-16 15:15:37Z daisuke $
 #
 # Copyright (c) 2006 Daisuke Maki <dmaki@cpan.org>
 # All rights reserved.
@@ -12,7 +12,7 @@ my %CLOSURES;
 
 BEGIN
 {
-    $VERSION = '0.02';
+    $VERSION = '0.03';
 
     my @closures = qw(
         hiragana
@@ -47,12 +47,13 @@ BEGIN
     @EXPORT_OK = @{$EXPORT_TAGS{all}};
 }
 
+my $DASH_UTF = decode('euc-jp', "¡¼¡Ý¡½-");
 sub match_hiragana
 {
     require Encode::Detect;
     my($value) = @_;
     my $utf = decode('Detect', $value);
-    return $utf !~ /[^\p{InHiragana}]/;
+    return $utf !~ /[^\p{InHiragana}$DASH_UTF]/;
 }
 
 sub match_katakana
@@ -60,7 +61,7 @@ sub match_katakana
     require Encode::Detect;
     my($value) = @_;
     my $utf = decode('Detect', $value);
-    return $utf !~ /[^\p{InKatakana}]/;
+    return $utf !~ /[^\p{InKatakana}$DASH_UTF]/;
 }
 
 sub match_jp_mobile_email

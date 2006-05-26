@@ -1,6 +1,9 @@
 Changes
 =======
 
+0.03 - 26 May 2006
+    - Allow dashes in hiragana/katakana
+
 0.02 - 16 May 2006
     - Added jp_length.
 

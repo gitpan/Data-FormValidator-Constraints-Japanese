@@ -1,6 +1,6 @@
 #!perl
 use strict;
-use Test::More (tests => 4);
+use Test::More (tests => 5);
 use Data::FormValidator;
 
 BEGIN
@@ -11,6 +11,9 @@ BEGIN
 my $dfv = Data::FormValidator->new('t/profile.pl');
 my $rv  = $dfv->check({ hiragana => "にほんご", katakana => "カタカナ" }, "basic");
 
+ok(! $rv->has_invalid && ! $rv->has_missing && ! $rv->has_unknown, "valid");
+
+$rv = $dfv->check({ hiragana => "にほんごうぃずだっしゅーーー" }, "basic");
 ok(! $rv->has_invalid && ! $rv->has_missing && ! $rv->has_unknown, "valid");
 
 $rv = $dfv->check({ hiragana => "日本語" }, "basic");
