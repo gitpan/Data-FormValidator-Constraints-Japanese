@@ -1,6 +1,6 @@
-# $Id: Japanese.pm 2 2006-05-16 15:15:37Z daisuke $
+# $Id: Japanese.pm 5 2007-02-05 09:11:33Z daisuke $
 #
-# Copyright (c) 2006 Daisuke Maki <dmaki@cpan.org>
+# Copyright (c) 2006 Daisuke Maki <daisuke@endeworks.jp>
 # All rights reserved.
 
 package Data::FormValidator::Constraints::Japanese;
@@ -12,7 +12,7 @@ my %CLOSURES;
 
 BEGIN
 {
-    $VERSION = '0.03';
+    $VERSION = '0.04';
 
     my @closures = qw(
         hiragana
@@ -27,7 +27,7 @@ BEGIN
                     my \$dfv = shift;
                     \$dfv->name_this('$func');
                     no strict 'refs';
-                    return &{"match_$func"}(\@_);
+                    return &{"_match_$func"}(\@_);
                 };
                 return \$CLOSURES{$func};
             };
@@ -48,7 +48,7 @@ BEGIN
 }
 
 my $DASH_UTF = decode('euc-jp', "¡¼¡Ý¡½-");
-sub match_hiragana
+sub _match_hiragana
 {
     require Encode::Detect;
     my($value) = @_;
@@ -56,7 +56,7 @@ sub match_hiragana
     return $utf !~ /[^\p{InHiragana}$DASH_UTF]/;
 }
 
-sub match_katakana
+sub _match_katakana
 {
     require Encode::Detect;
     my($value) = @_;
@@ -64,36 +64,36 @@ sub match_katakana
     return $utf !~ /[^\p{InKatakana}$DASH_UTF]/;
 }
 
-sub match_jp_mobile_email
+sub _match_jp_mobile_email
 {
     require Mail::Address::MobileJp;
     Mail::Address::MobileJp::is_mobile_jp($_[0]);
 }
 
-sub match_jp_zip
+sub _match_jp_zip
 {
     $_[0] =~ /^\d{3}\-?\d{4}$/
 }
 
-sub match_jp_imode_email
+sub _match_jp_imode_email
 {
     require Mail::Address::MobileJp;
     Mail::Address::MobileJp::is_imode($_[0]);
 }
 
-sub match_jp_ezweb_email
+sub _match_jp_ezweb_email
 {
     require Mail::Address::MobileJp;
     Mail::Address::MobileJp::is_ezweb($_[0]);
 }
 
-sub match_jp_vodafone_email
+sub _match_jp_vodafone_email
 {
     require Mail::Address::MobileJp;
     Mail::Address::MobileJp::is_vodafone($_[0]);
 }
 
-sub check_jp_length
+sub _check_jp_length
 {
     require Encode::Detect;
     my $l = length(decode('Detect', $_[0]));
@@ -109,7 +109,7 @@ sub jp_length
         my $dfv = shift;
         $dfv->name_this('jp_length');
         no strict 'refs';
-        return &{"check_jp_length"}(@_, $min, $max);
+        return &{"_check_jp_length"}(@_, $min, $max);
     };
 }
 
@@ -119,7 +119,7 @@ __END__
 
 =head1 NAME
 
-Data::FormValidator::Constraints:Japanese - Japan-Specific Constraints For Data::FormValidator
+Data::FormValidator::Constraints::Japanese - Japan-Specific Constraints For Data::FormValidator
 
 =head1 SYNOPSIS
 
@@ -146,28 +146,34 @@ Data::FormValidator::Constraints:Japanese - Japan-Specific Constraints For Data:
 
 =head1 DESCRIPTION
 
-D::FM::C::Japanese provides you with contraint methods that makes it easier to
+D::FM::C::Japanese provides you with constraint methods that makes it easier to
 validate your Japanese input using Data::FormValidator.
 
 =head1 FUNCTIONS
 
-=head1 hiragana
+=head2 hiragana
 
 Returns a closure that checks if the input is all in hiragana
 
-=head1 katakana
+=head2 katakana
 
 Returns a closure that checks if the input is all in katakana
 
-=head1 jp_mobile_email
+=head2 jp_zip
 
-=head1 jp_imode_email
+Returns a closure that checks if the input is a valid Japanese zipcode
+(This is probably insufficient for edge cases). It also does not check
+if the zip code actually exists.
 
-=head1 jp_ezweb_email
+=head2 jp_mobile_email
 
-=head1 jp_vodafone_email
+=head2 jp_imode_email
 
-=head1 jp_length
+=head2 jp_ezweb_email
+
+=head2 jp_vodafone_email
+
+=head2 jp_length
 
 =head1 TODO
 
@@ -176,7 +182,7 @@ request, or when I encounter something new to validate. Patches welcome.
 
 =head1 AUTHOR
 
-Copyright (c) 2006 Daisuke Maki <dmaki@cpan.org>
+Copyright (c) 2006-2007 Daisuke Maki E<lt>dmaki@endeworks.jpE<gt>
 All rights reserved.
 
 =cut
